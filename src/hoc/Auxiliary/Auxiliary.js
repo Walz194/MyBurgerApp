@@ -1,5 +1,5 @@
-const aux = (props) => {
-  return props.children;
-};
+const Auxiliary = (props)=>{
+    return props.children;
+}
 
-export default aux;
+export default Auxiliary;
