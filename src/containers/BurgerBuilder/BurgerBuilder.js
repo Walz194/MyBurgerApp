@@ -8,8 +8,8 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import { connect } from "react-redux";
-import * as actionType from "../../store/actions";
 import axios from "../../axios-orders";
+import * as burgerBuilderAction from "../../store/actions/index";
 
 class BurgerBuilder extends Component {
   // constructor(props) {
@@ -18,19 +18,11 @@ class BurgerBuilder extends Component {
   // }
   state = {
     purchasing: false,
-    loading: false,
-    error: false,
   };
 
   componentDidMount() {
     console.log(this.props);
-    // axios.get( 'https://react-my-burger-8ffda.firebaseio.com/ingredients.json' )
-    //     .then( response => {
-    //         this.setState( { ingredients: response.data } );
-    //     } )
-    //     .catch( error => {
-    //         this.setState( { error: true } );
-    //     } );
+    this.props.initIngredient;
   }
 
   updatePurchaseState(ingredients) {
@@ -65,7 +57,7 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
     let orderSummary = null;
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <p>Ingredients can't be loaded!</p>
     ) : (
       <Spinner />
@@ -116,15 +108,17 @@ const mapStateToProps = (state) => {
   return {
     ings: state.ingredients,
     price: state.totalPrice,
+    error: state.error,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onIngredientAdded: (ingName) =>
-      dispatch({ type: actionType.ADD_INGREDIENT, ingredientName: ingName }),
+      dispatch(burgerBuilderAction.addIngredient(ingName)),
     onIngredientRemoved: (ingName) =>
-      dispatch({ type: actionType.REMOVE_INGREDIENT, ingredientName: ingName }),
+      dispatch(burgerBuilderAction.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(burgerBuilderAction.initIngredient()),
   };
 };
 
